@@ -1,0 +1,21 @@
+COMPILADORKALED - Proyecto Django
+
+Incluye análisis léxico, sintáctico y un analizador semántico educativo básico.
+
+REQUISITOS
+- Python 3.10 o superior
+- Django (instalar con: pip install -r requirements.txt)
+
+EJECUCIÓN
+1. Descomprime el ZIP.
+2. Abre una terminal en la carpeta compiladorKaled.
+3. Instala dependencias: pip install -r requirements.txt
+4. Ejecuta: python manage.py migrate
+5. Ejecuta: python manage.py runserver
+6. Abre en el navegador: http://127.0.0.1:8000/
+
+ANÁLISIS SEMÁNTICO
+El módulo analizador/semantico.py comprueba declaraciones duplicadas, uso de variables no declaradas y algunas incompatibilidades de tipos en asignaciones simples. Es una implementación educativa inicial; no sustituye un sistema completo de tipos ni análisis de ámbitos anidados.
+
+NOTA
+El proyecto conserva los analizadores léxico y sintáctico que venían en el ZIP original. Se recomienda probarlo con los ejemplos incluidos y revisar las reglas del lenguaje de la asignatura.

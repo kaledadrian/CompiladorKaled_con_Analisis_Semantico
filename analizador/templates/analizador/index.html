@@ -1,0 +1,136 @@
+{% extends 'analizador/base.html' %}
+
+{% block title %}Analizador Léxico y Sintáctico{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0"><i class="fas fa-code"></i> Analizador Léxico y Sintáctico</h3>
+            </div>
+            <div class="card-body">
+                <form id="analizadorForm" method="POST" action="{% url 'analizar' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="codigo" class="form-label"><i class="fas fa-file-code"></i> Ingresa tu código fuente:</label>
+                        <textarea class="form-control" id="codigo" name="codigo" rows="12" 
+                                  placeholder="Escribe tu código aquí...&#10;Ejemplo:&#10;int main() {&#10;    int x = 5;&#10;    if (x > 3) {&#10;        print(&quot;Hola Mundo&quot;);&#10;    }&#10;    return 0;&#10;}"></textarea>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-search"></i> Analizar Código
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-lg" onclick="limpiarTexto()">
+                            <i class="fas fa-eraser"></i> Limpiar
+                        </button>
+                        <button type="button" class="btn btn-info btn-lg" onclick="cargarEjemplo()">
+                            <i class="fas fa-folder-open"></i> Cargar Ejemplo
+                        </button>
+                        <button type="button" class="btn btn-warning btn-lg" onclick="cargarEjemploConErrores()">
+                            <i class="fas fa-exclamation-triangle"></i> Ejemplo con Errores
+                        </button>
+                    </div>
+                </form>
+
+                <div id="loadingSpinner" class="text-center mt-3" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Analizando...</span>
+                    </div>
+                    <p class="mt-2"><i class="fas fa-spinner fa-spin"></i> Analizando código, por favor espera...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Instrucciones y Ejemplos</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-key"></i> Palabras clave soportadas:</h6>
+                        <p>
+                            <span class="badge bg-secondary">if</span> 
+                            <span class="badge bg-secondary">else</span> 
+                            <span class="badge bg-secondary">while</span> 
+                            <span class="badge bg-secondary">for</span> 
+                            <span class="badge bg-secondary">return</span> 
+                            <span class="badge bg-secondary">int</span> 
+                            <span class="badge bg-secondary">float</span> 
+                            <span class="badge bg-secondary">string</span> 
+                            <span class="badge bg-secondary">void</span> 
+                            <span class="badge bg-secondary">print</span>
+                        </p>
+                        
+                        <h6><i class="fas fa-plus-circle"></i> Operadores:</h6>
+                        <p><code>+ - * / % = == != < > <= >= && ||</code></p>
+                        
+                        <h6><i class="fas fa-brackets-curly"></i> Delimitadores:</h6>
+                        <p><code>{ } ( ) [ ] ; ,</code></p>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-info">
+                            <strong><i class="fas fa-lightbulb"></i> Ejemplo de código válido:</strong>
+                            <pre class="mt-2 mb-0" style="background: #f8f9fa; padding: 10px; border-radius: 5px;">
+int main() {
+    int x = 5;
+    int y = 10;
+    if (x > y) {
+        print("x es mayor");
+    } else {
+        print("y es mayor");
+    }
+    return 0;
+}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function limpiarTexto() {
+        document.getElementById('codigo').value = '';
+        document.getElementById('loadingSpinner').style.display = 'none';
+    }
+
+    function cargarEjemplo() {
+        const ejemplo = `int main() {
+    int x = 5;
+    int y = 10;
+    if (x > y) {
+        print("x es mayor");
+    } else {
+        print("y es mayor");
+    }
+    return 0;
+}`;
+        document.getElementById('codigo').value = ejemplo;
+        document.getElementById('loadingSpinner').style.display = 'none';
+    }
+
+    function cargarEjemploConErrores() {
+        const ejemplo = `int main() {
+    int x = 5;
+    int @y = 10;  // Error: carácter inválido @
+    if (x > y) {
+        print("x es mayor");
+    } else {
+        print("y es mayor")
+    }  // Error: falta punto y coma
+    return 0
+    // Error: falta punto y coma
+}`;
+        document.getElementById('codigo').value = ejemplo;
+        document.getElementById('loadingSpinner').style.display = 'none';
+    }
+
+    document.getElementById('analizadorForm').addEventListener('submit', function(e) {
+        document.getElementById('loadingSpinner').style.display = 'block';
+    });
+</script>
+{% endblock %}
